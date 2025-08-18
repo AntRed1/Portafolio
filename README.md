@@ -1,14 +1,14 @@
-# 🚀 **AntRed1 Portfolio**
+# 🚀 **AntRed1 Portafolio**
 
 <div align="center">
 
-![Portfolio Preview](https://via.placeholder.com/800x400/4F46E5/ffffff?text=AntRed1+Portfolio)
+![Portafolio Preview](https://via.placeholder.com/800x400/4F46E5/ffffff?text=AntRed1+Portafolio)
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-4F46E5?style=for-the-badge)](https://antred1.dev)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/AntRed1/Portafolio)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/antred1)
 
-*Un portfolio moderno y responsivo construido con tecnologías de vanguardia*
+*Un Portafolio moderno y responsivo construido con tecnologías de vanguardia*
 
 </div>
 

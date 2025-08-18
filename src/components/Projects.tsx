@@ -10,46 +10,55 @@ import {
   RefreshCw,
   Wifi,
   WifiOff,
+  Calendar,
+  Tag,
 } from "lucide-react";
-import { useInView } from "../hooks/useInView";
-import { useLanguage } from "../context/LanguageContext";
 
-interface GitHubRepo {
-  id: number;
-  name: string;
-  description: string | null;
-  html_url: string;
-  homepage: string | null;
-  language: string;
-  languages_url: string;
-  stargazers_count: number;
-  forks_count: number;
-  created_at: string;
-  updated_at: string;
-  topics: string[];
-  fork: boolean;
-}
+// Mock hooks para el ejemplo (reemplaza con tus hooks reales)
+const useInView = (ref) => {
+  const [isInView, setIsInView] = useState(false);
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+  
+  return isInView;
+};
 
-interface ProjectWithLanguages extends GitHubRepo {
-  languages: Record<string, number>;
-  category: string;
-  image?: string;
-}
+const useLanguage = () => ({
+  t: (key) => {
+    const translations = {
+      "projects.title": "My Projects",
+      "projects.subtitle": "Explore my latest work and contributions on GitHub",
+      "projects.all": "All",
+      "projects.frontend": "Frontend",
+      "projects.backend": "Backend",
+      "projects.fullstack": "Full Stack",
+      "projects.mobile": "Mobile",
+      "projects.searchPlaceholder": "Search projects..."
+    };
+    return translations[key] || key;
+  }
+});
 
-// Datos estáticos como fallback mejorados
-const fallbackProjects: ProjectWithLanguages[] = [
+// Datos estáticos mejorados
+const fallbackProjects = [
   {
     id: 1,
-    name: "Portfolio Website",
-    description:
-      "Modern portfolio website built with React and TypeScript featuring responsive design and dark mode",
+    name: "Modern Portfolio Website",
+    description: "Responsive portfolio website built with React and TypeScript featuring dark mode, animations, and modern design patterns",
     html_url: "https://github.com/AntRed1/portfolio",
     homepage: "https://antred1.dev",
     language: "TypeScript",
-    languages_url: "",
-    stargazers_count: 12,
-    forks_count: 3,
-    created_at: "2024-01-01",
+    stargazers_count: 25,
+    forks_count: 8,
+    created_at: "2024-01-15",
     updated_at: "2024-08-15",
     topics: ["portfolio", "react", "typescript", "responsive", "dark-mode"],
     fork: false,
@@ -59,14 +68,12 @@ const fallbackProjects: ProjectWithLanguages[] = [
   {
     id: 2,
     name: "E-commerce Platform",
-    description:
-      "Full-stack e-commerce solution with React, Node.js, and MongoDB featuring payment integration and admin dashboard",
-    html_url: "https://github.com/AntRed1/ecommerce",
-    homepage: "https://shop.antred1.dev",
+    description: "Full-stack e-commerce solution with React frontend, Node.js backend, and MongoDB database featuring payment integration",
+    html_url: "https://github.com/AntRed1/ecommerce-platform",
+    homepage: "https://shop-demo.antred1.dev",
     language: "JavaScript",
-    languages_url: "",
-    stargazers_count: 28,
-    forks_count: 7,
+    stargazers_count: 42,
+    forks_count: 15,
     created_at: "2024-02-01",
     updated_at: "2024-08-10",
     topics: ["ecommerce", "fullstack", "react", "nodejs", "mongodb", "stripe"],
@@ -76,24 +83,16 @@ const fallbackProjects: ProjectWithLanguages[] = [
   },
   {
     id: 3,
-    name: "Task Management Mobile",
-    description:
-      "Cross-platform mobile task management app built with React Native and Firebase",
-    html_url: "https://github.com/AntRed1/task-app",
+    name: "Task Management App",
+    description: "Cross-platform mobile task management application built with React Native and Firebase for iOS and Android",
+    html_url: "https://github.com/AntRed1/task-manager",
     homepage: null,
     language: "JavaScript",
-    languages_url: "",
-    stargazers_count: 15,
-    forks_count: 4,
+    stargazers_count: 18,
+    forks_count: 6,
     created_at: "2024-03-01",
     updated_at: "2024-08-05",
-    topics: [
-      "mobile",
-      "react-native",
-      "firebase",
-      "productivity",
-      "cross-platform",
-    ],
+    topics: ["mobile", "react-native", "firebase", "productivity", "cross-platform"],
     fork: false,
     languages: { JavaScript: 75, Java: 15, Swift: 10 },
     category: "mobile",
@@ -101,12 +100,10 @@ const fallbackProjects: ProjectWithLanguages[] = [
   {
     id: 4,
     name: "API Gateway Service",
-    description:
-      "Microservices API gateway with authentication, rate limiting, and monitoring built with Python FastAPI",
+    description: "Microservices API gateway with authentication, rate limiting, monitoring, and load balancing built with Python FastAPI",
     html_url: "https://github.com/AntRed1/api-gateway",
     homepage: null,
     language: "Python",
-    languages_url: "",
     stargazers_count: 35,
     forks_count: 12,
     created_at: "2024-04-01",
@@ -119,17 +116,15 @@ const fallbackProjects: ProjectWithLanguages[] = [
   {
     id: 5,
     name: "Data Visualization Dashboard",
-    description:
-      "Interactive dashboard for data visualization using D3.js and React with real-time updates",
-    html_url: "https://github.com/AntRed1/data-viz",
+    description: "Interactive real-time dashboard for data visualization using D3.js, React, and WebSocket connections",
+    html_url: "https://github.com/AntRed1/data-viz-dashboard",
     homepage: "https://viz.antred1.dev",
     language: "JavaScript",
-    languages_url: "",
-    stargazers_count: 22,
-    forks_count: 6,
+    stargazers_count: 31,
+    forks_count: 9,
     created_at: "2024-05-01",
     updated_at: "2024-08-08",
-    topics: ["data-visualization", "d3js", "react", "dashboard", "charts"],
+    topics: ["data-visualization", "d3js", "react", "dashboard", "realtime"],
     fork: false,
     languages: { JavaScript: 70, CSS: 20, HTML: 10 },
     category: "frontend",
@@ -137,23 +132,15 @@ const fallbackProjects: ProjectWithLanguages[] = [
   {
     id: 6,
     name: "Machine Learning Pipeline",
-    description:
-      "End-to-end ML pipeline for data processing, model training, and deployment using Python and MLflow",
+    description: "End-to-end ML pipeline for data processing, model training, evaluation, and deployment using Python and MLflow",
     html_url: "https://github.com/AntRed1/ml-pipeline",
     homepage: null,
     language: "Python",
-    languages_url: "",
-    stargazers_count: 41,
-    forks_count: 15,
+    stargazers_count: 48,
+    forks_count: 20,
     created_at: "2024-06-01",
     updated_at: "2024-08-14",
-    topics: [
-      "machine-learning",
-      "python",
-      "mlflow",
-      "data-science",
-      "tensorflow",
-    ],
+    topics: ["machine-learning", "python", "mlflow", "data-science", "tensorflow"],
     fork: false,
     languages: { Python: 90, Jupyter: 8, Shell: 2 },
     category: "backend",
@@ -161,43 +148,22 @@ const fallbackProjects: ProjectWithLanguages[] = [
 ];
 
 const Projects = () => {
-  const [projects, setProjects] = useState<ProjectWithLanguages[]>([]);
-  const [filteredProjects, setFilteredProjects] = useState<
-    ProjectWithLanguages[]
-  >([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
   const [usingFallback, setUsingFallback] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [categories, setCategories] = useState<
-    Array<{ id: string; label: string }>
-  >([]);
-  const ref = useRef<HTMLElement>(null);
+  const [categories, setCategories] = useState([]);
+  
+  const ref = useRef(null);
   const isInView = useInView(ref);
   const { t } = useLanguage();
 
-  const maxRetries = 3;
-  const retryDelays = [1000, 2000, 3000]; // Delays progresivos
-
-  // Detectar estado de conexión
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
-
   // Mapeo de lenguajes a categorías
-  const languageToCategory: Record<string, string> = {
+  const languageToCategory = {
     JavaScript: "frontend",
     TypeScript: "frontend",
     React: "frontend",
@@ -213,396 +179,237 @@ const Projects = () => {
     Ruby: "backend",
     Go: "backend",
     Rust: "backend",
-    "Node.js": "backend",
     Swift: "mobile",
     Kotlin: "mobile",
     Dart: "mobile",
-    Flutter: "mobile",
-    "React Native": "mobile",
   };
 
-  // Función para determinar categoría basada en lenguajes y topics
-  const determineCategory = (
-    languages: Record<string, number>,
-    topics: string[]
-  ): string => {
-    // Primero verificar topics para casos específicos
-    if (
-      topics.some((topic) =>
-        [
-          "mobile",
-          "android",
-          "ios",
-          "flutter",
-          "react-native",
-          "ionic",
-          "xamarin",
-        ].includes(topic.toLowerCase())
-      )
-    ) {
-      return "mobile";
+  // Detectar estado de conexión
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  // Función para determinar categoría
+  const determineCategory = (languages, topics) => {
+    // Verificar topics primero
+    const topicKeywords = {
+      mobile: ["mobile", "android", "ios", "flutter", "react-native"],
+      fullstack: ["fullstack", "full-stack", "mern", "mean", "ecommerce"],
+      backend: ["backend", "api", "server", "database", "microservices"],
+      frontend: ["frontend", "ui", "ux", "web", "react", "vue", "dashboard"]
+    };
+
+    for (const [category, keywords] of Object.entries(topicKeywords)) {
+      if (topics.some(topic => 
+        keywords.some(keyword => topic.toLowerCase().includes(keyword))
+      )) {
+        return category;
+      }
     }
 
-    if (
-      topics.some((topic) =>
-        [
-          "fullstack",
-          "full-stack",
-          "mern",
-          "mean",
-          "django",
-          "rails",
-          "laravel",
-          "express",
-        ].includes(topic.toLowerCase())
-      )
-    ) {
-      return "fullstack";
-    }
-
-    if (
-      topics.some((topic) =>
-        [
-          "backend",
-          "api",
-          "server",
-          "database",
-          "microservices",
-          "fastapi",
-          "django",
-          "flask",
-        ].includes(topic.toLowerCase())
-      )
-    ) {
-      return "backend";
-    }
-
-    if (
-      topics.some((topic) =>
-        [
-          "frontend",
-          "ui",
-          "ux",
-          "web",
-          "react",
-          "vue",
-          "angular",
-          "dashboard",
-        ].includes(topic.toLowerCase())
-      )
-    ) {
-      return "frontend";
-    }
-
-    // Luego verificar por lenguajes principales
-    const sortedLanguages = Object.entries(languages).sort(
-      ([, a], [, b]) => b - a
+    // Verificar por lenguajes
+    const sortedLanguages = Object.entries(languages).sort(([,a], [,b]) => b - a);
+    const hasBackend = sortedLanguages.some(([lang]) => 
+      ["Python", "Java", "C#", "PHP", "Ruby", "Go", "Rust"].includes(lang)
+    );
+    const hasFrontend = sortedLanguages.some(([lang]) => 
+      ["JavaScript", "TypeScript", "HTML", "CSS", "React"].includes(lang)
     );
 
-    // Detectar si es fullstack basado en combinación de lenguajes
-    const hasBackendLang = sortedLanguages.some(([lang]) =>
-      ["Python", "Java", "C#", "PHP", "Ruby", "Go", "Rust", "Node.js"].includes(
-        lang
-      )
-    );
-    const hasFrontendLang = sortedLanguages.some(([lang]) =>
-      [
-        "JavaScript",
-        "TypeScript",
-        "HTML",
-        "CSS",
-        "SCSS",
-        "Vue",
-        "React",
-      ].includes(lang)
-    );
+    if (hasBackend && hasFrontend) return "fullstack";
 
-    if (hasBackendLang && hasFrontendLang) {
-      return "fullstack";
-    }
-
-    // Categorizar por lenguaje principal
     for (const [lang] of sortedLanguages.slice(0, 2)) {
       const category = languageToCategory[lang];
       if (category) return category;
     }
 
-    return "fullstack"; // default
+    return "fullstack";
   };
 
-  // Función para usar datos de fallback con mensaje apropiado
-  const useFallbackData = (reason: string = "connection") => {
-    console.log("Using fallback data due to:", reason);
+  // Función para usar datos de fallback
+  const useFallbackData = (reason = "connection") => {
+    console.log("Using fallback data:", reason);
     setUsingFallback(true);
     setProjects(fallbackProjects);
-
-    const uniqueCategories = [
-      ...new Set(fallbackProjects.map((p) => p.category)),
-    ];
+    setLoading(false);
+    
+    const uniqueCategories = [...new Set(fallbackProjects.map(p => p.category))];
     const categoryLabels = [
-      { id: "all", label: t("projects.all") || "All" },
-      ...uniqueCategories.map((cat) => ({
+      { id: "all", label: t("projects.all") },
+      ...uniqueCategories.map(cat => ({
         id: cat,
-        label:
-          t(`projects.${cat}`) || cat.charAt(0).toUpperCase() + cat.slice(1),
-      })),
+        label: t(`projects.${cat}`) || cat.charAt(0).toUpperCase() + cat.slice(1)
+      }))
     ];
-
+    
     setCategories(categoryLabels);
-
-    // Mensajes de error más específicos
+    
     const errorMessages = {
-      connection:
-        "GitHub API is temporarily unavailable. Showing sample projects.",
-      timeout: "Request timed out. Showing sample projects while we retry.",
-      rateLimit: "GitHub API rate limit exceeded. Showing sample projects.",
-      offline: "You're offline. Showing cached sample projects.",
-      error: "Unable to load GitHub data. Showing sample projects.",
+      connection: "Showing sample projects - GitHub API temporarily unavailable",
+      offline: "You're offline - Showing cached projects",
+      rateLimit: "GitHub API rate limit reached - Showing sample projects",
+      error: "Unable to load GitHub data - Showing sample projects"
     };
-
-    setError(
-      errorMessages[reason as keyof typeof errorMessages] || errorMessages.error
-    );
+    
+    setError(errorMessages[reason] || errorMessages.error);
   };
 
-  // Función mejorada para reintentos con backoff exponencial
-  const fetchWithRetry = async (
-    url: string,
-    options: RequestInit = {}
-  ): Promise<Response> => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
-
-    try {
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-        headers: {
-          Accept: "application/vnd.github.v3+json",
-          "User-Agent": "Portfolio-Website",
-          ...options.headers,
-        },
-      });
-
-      clearTimeout(timeoutId);
-      return response;
-    } catch (error) {
-      clearTimeout(timeoutId);
-      if (error instanceof Error && error.name === "AbortError") {
-        throw new Error("Request timeout");
-      }
-      throw error;
-    }
-  };
-
-  // Función principal para obtener proyectos de GitHub
-  const fetchGitHubProjects = async (attempt: number = 0): Promise<void> => {
+  // Función para obtener proyectos de GitHub
+  const fetchGitHubProjects = async () => {
     try {
       setLoading(true);
       setError("");
-      setRetryCount(attempt);
 
-      // Verificar conexión
       if (!isOnline) {
         useFallbackData("offline");
         return;
       }
 
-      console.log(
-        `Fetching GitHub projects (attempt ${attempt + 1}/${maxRetries + 1})`
-      );
+      console.log("Fetching GitHub projects...");
 
-      // Obtener repositorios públicos con retry
-      const reposResponse = await fetchWithRetry(
-        "https://api.github.com/users/AntRed1/repos?type=public&sort=updated&per_page=30"
-      );
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      // Manejar diferentes códigos de error
-      if (!reposResponse.ok) {
-        if (reposResponse.status === 403) {
-          const resetHeader = reposResponse.headers.get("x-ratelimit-reset");
-          console.warn(
-            `GitHub API rate limit exceeded. Reset at: ${resetHeader}`
-          );
-          useFallbackData("rateLimit");
-          return;
-        }
-        if (reposResponse.status === 429) {
-          console.warn("Too many requests to GitHub API");
-          useFallbackData("rateLimit");
-          return;
-        }
-        throw new Error(
-          `HTTP ${reposResponse.status}: ${reposResponse.statusText}`
+      try {
+        const response = await fetch(
+          "https://api.github.com/users/AntRed1/repos?type=public&sort=updated&per_page=20",
+          {
+            signal: controller.signal,
+            headers: {
+              "Accept": "application/vnd.github.v3+json",
+              "User-Agent": "Portfolio-Website"
+            }
+          }
         );
-      }
 
-      const repos = await reposResponse.json();
+        clearTimeout(timeoutId);
 
-      // Verificar si la respuesta es válida
-      if (!Array.isArray(repos)) {
-        throw new Error("Invalid response format from GitHub API");
-      }
+        if (!response.ok) {
+          if (response.status === 403 || response.status === 429) {
+            useFallbackData("rateLimit");
+            return;
+          }
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
 
-      if (repos.length === 0) {
-        console.warn("No repositories found");
-        useFallbackData("error");
-        return;
-      }
+        const repos = await response.json();
 
-      // Filtrar y procesar repositorios
-      let ownRepos = repos.filter((repo) => !repo.fork && repo.description);
+        if (!Array.isArray(repos) || repos.length === 0) {
+          useFallbackData("error");
+          return;
+        }
 
-      // Si no hay repositorios con descripción, tomar algunos sin descripción
-      if (ownRepos.length === 0) {
-        ownRepos = repos.filter((repo) => !repo.fork).slice(0, 8);
-      }
+        // Filtrar y procesar repositorios
+        let filteredRepos = repos.filter(repo => !repo.fork);
+        
+        // Si hay pocos repos, tomar algunos con fork
+        if (filteredRepos.length < 3) {
+          filteredRepos = repos.slice(0, 8);
+        }
 
-      // Procesar repositorios con datos básicos
-      const projectsWithLanguages: ProjectWithLanguages[] = ownRepos.map(
-        (repo) => {
-          const languages = repo.language
-            ? { [repo.language]: 100 }
-            : { JavaScript: 60, HTML: 25, CSS: 15 };
+        const projectsWithLanguages = filteredRepos.map(repo => {
+          const languages = repo.language ? { [repo.language]: 100 } : { JavaScript: 70, HTML: 20, CSS: 10 };
           const category = determineCategory(languages, repo.topics || []);
 
           return {
             ...repo,
             languages,
             category,
+            description: repo.description || `${repo.name.replace(/-/g, ' ')} - A GitHub repository`
           };
-        }
-      );
+        });
 
-      // Éxito: actualizar estado
-      setProjects(projectsWithLanguages);
-      setUsingFallback(false);
-      setRetryCount(0);
-
-      // Generar categorías dinámicamente
-      const uniqueCategories = [
-        ...new Set(projectsWithLanguages.map((p) => p.category)),
-      ];
-      const categoryLabels = [
-        { id: "all", label: t("projects.all") || "All" },
-        ...uniqueCategories.map((cat) => ({
-          id: cat,
-          label:
-            t(`projects.${cat}`) || cat.charAt(0).toUpperCase() + cat.slice(1),
-        })),
-      ];
-
-      setCategories(categoryLabels);
-
-      console.log(
-        `Successfully loaded ${projectsWithLanguages.length} projects from GitHub`
-      );
-    } catch (error) {
-      console.error(
-        `Error fetching GitHub projects (attempt ${attempt + 1}):`,
-        error
-      );
-
-      // Si aún podemos reintentar
-      if (attempt < maxRetries) {
-        const delay = retryDelays[attempt] || 3000;
-        console.log(`Retrying in ${delay}ms...`);
-
-        setError(
-          `Connection failed. Retrying in ${delay / 1000}s... (${
-            attempt + 1
-          }/${maxRetries})`
-        );
-
-        setTimeout(() => {
-          fetchGitHubProjects(attempt + 1);
-        }, delay);
-      } else {
-        // Máximo de reintentos alcanzado
-        console.error("Max retries exceeded, using fallback data");
-        const errorType =
-          error instanceof Error && error.message.includes("timeout")
-            ? "timeout"
-            : "connection";
-        useFallbackData(errorType);
-      }
-    } finally {
-      if (attempt >= maxRetries || !isOnline) {
+        setProjects(projectsWithLanguages);
+        setUsingFallback(false);
         setLoading(false);
+
+        // Generar categorías
+        const uniqueCategories = [...new Set(projectsWithLanguages.map(p => p.category))];
+        const categoryLabels = [
+          { id: "all", label: t("projects.all") },
+          ...uniqueCategories.map(cat => ({
+            id: cat,
+            label: t(`projects.${cat}`) || cat.charAt(0).toUpperCase() + cat.slice(1)
+          }))
+        ];
+        
+        setCategories(categoryLabels);
+        console.log(`Successfully loaded ${projectsWithLanguages.length} projects`);
+
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        throw fetchError;
+      }
+
+    } catch (error) {
+      console.error("Error fetching GitHub projects:", error);
+      
+      if (error.name === 'AbortError') {
+        useFallbackData("connection");
+      } else {
+        useFallbackData("error");
       }
     }
   };
 
-  // Función manual para reintento
+  // Función para reintento manual
   const handleManualRetry = () => {
-    setRetryCount(0);
-    setError("");
-    fetchGitHubProjects(0);
+    fetchGitHubProjects();
   };
 
-  // Efecto principal para cargar proyectos
+  // Efecto para cargar proyectos
   useEffect(() => {
-    fetchGitHubProjects(0);
-  }, [t, isOnline]);
+    // Usar fallback inmediatamente y luego intentar cargar desde GitHub
+    useFallbackData("connection");
+    
+    // Intentar cargar desde GitHub después de un breve delay
+    const timer = setTimeout(() => {
+      if (isOnline) {
+        fetchGitHubProjects();
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [isOnline]);
 
   // Filtrar proyectos
   useEffect(() => {
     let filtered = projects;
 
-    // Filtrar por categoría
     if (selectedCategory !== "all") {
-      filtered = filtered.filter(
-        (project) => project.category === selectedCategory
-      );
+      filtered = filtered.filter(project => project.category === selectedCategory);
     }
 
-    // Filtrar por término de búsqueda
     if (searchTerm) {
-      filtered = filtered.filter(
-        (project) =>
-          project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          project.description
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          project.topics?.some((topic) =>
-            topic.toLowerCase().includes(searchTerm.toLowerCase())
-          ) ||
-          Object.keys(project.languages).some((lang) =>
-            lang.toLowerCase().includes(searchTerm.toLowerCase())
-          )
+      filtered = filtered.filter(project =>
+        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.topics?.some(topic => topic.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        Object.keys(project.languages).some(lang => lang.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
     setFilteredProjects(filtered);
   }, [projects, selectedCategory, searchTerm]);
 
-  // Componente de estado de carga mejorado
-  if (loading) {
+  // Componente de carga inicial solo para casos muy específicos
+  if (loading && projects.length === 0 && !error) {
     return (
-      <section
-        id="projects"
-        className="section-padding bg-gray-50 dark:bg-gray-800"
-      >
-        <div className="container-custom">
-          <div className="flex items-center justify-center h-96">
-            <div className="text-center">
-              <Loader2 className="animate-spin h-12 w-12 text-primary-500 mx-auto mb-4" />
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
-                Loading projects from GitHub...
-              </p>
-              {retryCount > 0 && (
-                <p className="text-sm text-gray-500 dark:text-gray-500">
-                  Attempt {retryCount + 1} of {maxRetries + 1}
-                </p>
-              )}
-              {!isOnline && (
-                <div className="flex items-center justify-center mt-2 text-orange-600 dark:text-orange-400">
-                  <WifiOff size={16} className="mr-2" />
-                  <span className="text-sm">You appear to be offline</span>
-                </div>
-              )}
-            </div>
-          </div>
+      <section id="projects" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <div className="text-center">
+          <Loader2 className="animate-spin h-12 w-12 text-blue-500 mx-auto mb-4" />
+          <p className="text-lg text-slate-600 dark:text-slate-400">
+            Loading projects...
+          </p>
         </div>
       </section>
     );
@@ -612,85 +419,76 @@ const Projects = () => {
     <section
       id="projects"
       ref={ref}
-      className="section-padding bg-gray-50 dark:bg-gray-800"
+      className="py-20 bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 min-h-screen"
     >
-      <div className="container-custom">
-        <div
-          className={`transition-all duration-1000 ${
-            isInView ? "animate-fade-in-up" : "opacity-0 translate-y-10"
-          }`}
-        >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`transition-all duration-1000 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          {/* Header */}
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
-              {t("projects.title") || "My Projects"}
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              {t("projects.title")}
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              {t("projects.subtitle") ||
-                "Explore my latest work and contributions on GitHub"}
+            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
+              {t("projects.subtitle")}
             </p>
 
-            {/* Estado de conexión y errores */}
-            <div className="mt-4 space-y-2">
+            {/* Status indicators */}
+            <div className="mt-6 flex flex-wrap justify-center gap-4">
               {!isOnline && (
-                <div className="inline-flex items-center p-3 bg-orange-100 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 text-orange-800 dark:text-orange-200 rounded-lg">
-                  <WifiOff size={16} className="mr-2 flex-shrink-0" />
-                  <span className="text-sm">You're currently offline</span>
+                <div className="flex items-center px-4 py-2 bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 rounded-full text-sm">
+                  <WifiOff size={16} className="mr-2" />
+                  Offline Mode
                 </div>
               )}
-
+              
               {error && (
-                <div className="inline-flex items-center p-3 bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 rounded-lg max-w-lg mx-auto">
-                  <AlertTriangle size={16} className="mr-2 flex-shrink-0" />
-                  <span className="text-sm flex-1">{error}</span>
-                  {(error.includes("GitHub API") ||
-                    error.includes("Connection failed")) &&
-                    isOnline && (
-                      <button
-                        onClick={handleManualRetry}
-                        className="ml-3 p-1 hover:bg-yellow-200 dark:hover:bg-yellow-800/30 rounded transition-colors"
-                        title="Retry connection"
-                      >
-                        <RefreshCw size={14} />
-                      </button>
-                    )}
+                <div className="flex items-center px-4 py-2 bg-blue-100 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-sm">
+                  <AlertTriangle size={16} className="mr-2" />
+                  {error}
+                  {isOnline && (
+                    <button
+                      onClick={handleManualRetry}
+                      className="ml-3 p-1 hover:bg-blue-200 dark:hover:bg-blue-800/30 rounded-full transition-colors"
+                    >
+                      <RefreshCw size={14} />
+                    </button>
+                  )}
                 </div>
               )}
 
               {isOnline && !error && !usingFallback && (
-                <div className="inline-flex items-center text-green-600 dark:text-green-400 text-sm">
+                <div className="flex items-center px-4 py-2 bg-green-100 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 rounded-full text-sm">
                   <Wifi size={16} className="mr-2" />
-                  <span>Connected to GitHub</span>
+                  Connected to GitHub
                 </div>
               )}
             </div>
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-md mx-auto mb-8">
+          <div className="max-w-md mx-auto mb-12">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder={
-                  t("projects.searchPlaceholder") || "Search projects..."
-                }
+                placeholder={t("projects.searchPlaceholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 glass-card rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-primary-500/50 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="w-full pl-12 pr-4 py-4 bg-white/70 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 dark:bg-slate-800/70 shadow-lg transition-all duration-200"
               />
             </div>
           </div>
 
           {/* Filter Buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <div className="flex flex-wrap justify-center gap-3 mb-16">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${
                   selectedCategory === category.id
-                    ? "bg-primary-500 text-white shadow-lg shadow-primary-500/25"
-                    : "glass-card text-gray-600 dark:text-gray-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 hover:shadow-md"
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg shadow-blue-500/25'
+                    : 'bg-white/70 backdrop-blur-sm text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-slate-700/50 hover:text-blue-600 border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50'
                 }`}
               >
                 {category.label}
@@ -700,23 +498,25 @@ const Projects = () => {
 
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project) => (
+            {filteredProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
                 project={project}
                 usingFallback={usingFallback}
+                index={index}
               />
             ))}
           </div>
 
-          {filteredProjects.length === 0 && !loading && (
+          {/* No results */}
+          {filteredProjects.length === 0 && (
             <div className="text-center py-16">
-              <div className="glass-card rounded-2xl p-8 max-w-md mx-auto">
-                <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              <div className="bg-white/70 backdrop-blur-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800/70 rounded-3xl p-12 max-w-md mx-auto shadow-xl">
+                <Search className="h-16 w-16 text-slate-400 mx-auto mb-6" />
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
                   No projects found
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-slate-600 dark:text-slate-400">
                   Try adjusting your search or filter criteria
                 </p>
               </div>
@@ -728,40 +528,53 @@ const Projects = () => {
   );
 };
 
-interface ProjectCardProps {
-  project: ProjectWithLanguages;
-  usingFallback?: boolean;
-}
-
-const ProjectCard: React.FC<ProjectCardProps> = ({
-  project,
-  usingFallback,
-}) => {
-  // Obtener los lenguajes principales
+// Componente de tarjeta de proyecto mejorado
+const ProjectCard = ({ project, usingFallback, index }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
   const topLanguages = Object.entries(project.languages)
     .sort(([, a], [, b]) => b - a)
-    .slice(0, 3)
-    .map(([lang]) => lang);
+    .slice(0, 3);
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
 
   return (
-    <div className="glass-card rounded-xl overflow-hidden glass-hover group relative">
+    <div
+      className={`group relative bg-white/70 backdrop-blur-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800/70 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 animate-fade-in-up`}
+      style={{ animationDelay: `${index * 100}ms` }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Sample badge */}
       {usingFallback && (
-        <div className="absolute top-3 right-3 z-10">
-          <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full font-medium">
+        <div className="absolute top-4 right-4 z-10">
+          <span className="bg-blue-500/90 text-white text-xs px-3 py-1 rounded-full font-medium backdrop-blur-sm">
             Sample
           </span>
         </div>
       )}
 
-      <div className="relative">
-        <div className="w-full h-48 bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
-          <div className="text-center text-white p-6">
-            <h3 className="text-2xl font-bold mb-2 line-clamp-2">
-              {project.name
-                .replace(/-/g, " ")
-                .replace(/\b\w/g, (l) => l.toUpperCase())}
+      {/* Header with gradient */}
+      <div className="relative h-48 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 overflow-hidden">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div
+          className={`absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 transition-transform duration-700 ${
+            isHovered ? 'scale-110' : 'scale-100'
+          }`}
+        ></div>
+        
+        <div className="relative z-10 p-6 h-full flex flex-col justify-between">
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-2 line-clamp-2">
+              {project.name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
             </h3>
-            <div className="flex items-center justify-center space-x-4 text-sm opacity-90">
+            <div className="flex items-center space-x-4 text-white/90 text-sm">
               <div className="flex items-center space-x-1">
                 <Star size={14} />
                 <span>{project.stargazers_count}</span>
@@ -772,75 +585,77 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <div className="flex space-x-4">
-            <a
-              href={project.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 bg-white/90 backdrop-blur-sm rounded-full text-gray-700 hover:text-primary-500 transition-all duration-200 hover:scale-110"
-            >
-              <Github size={20} />
-            </a>
-            {project.homepage && (
+          {/* Hover overlay */}
+          <div className={`absolute inset-0 bg-black/60 flex items-center justify-center transition-opacity duration-300 ${
+            isHovered ? 'opacity-100' : 'opacity-0'
+          }`}>
+            <div className="flex space-x-4">
               <a
-                href={project.homepage}
+                href={project.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-white/90 backdrop-blur-sm rounded-full text-gray-700 hover:text-primary-500 transition-all duration-200 hover:scale-110"
+                className="p-3 bg-white/90 backdrop-blur-sm rounded-full text-slate-700 hover:text-blue-500 transition-all duration-200 hover:scale-110 shadow-lg"
               >
-                <ExternalLink size={20} />
+                <Github size={20} />
               </a>
-            )}
+              {project.homepage && (
+                <a
+                  href={project.homepage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 bg-white/90 backdrop-blur-sm rounded-full text-slate-700 hover:text-blue-500 transition-all duration-200 hover:scale-110 shadow-lg"
+                >
+                  <ExternalLink size={20} />
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Content */}
       <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-          {project.name
-            .replace(/-/g, " ")
-            .replace(/\b\w/g, (l) => l.toUpperCase())}
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
-          {project.description || "No description available"}
+        <p className="text-slate-600 dark:text-slate-400 mb-6 line-clamp-3 leading-relaxed">
+          {project.description}
         </p>
 
         {/* Languages */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {topLanguages.map((lang) => (
-            <span
+          {topLanguages.map(([lang, percentage]) => (
+            <div
               key={lang}
-              className="px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm rounded-full font-medium"
+              className="flex items-center px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-full font-medium border border-blue-200/50 dark:border-blue-700/50"
             >
+              <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
               {lang}
-            </span>
+            </div>
           ))}
         </div>
 
         {/* Topics */}
         {project.topics && project.topics.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-6">
             {project.topics.slice(0, 3).map((topic) => (
               <span
                 key={topic}
-                className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded-md"
+                className="flex items-center px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 text-xs rounded-lg border border-slate-200 dark:border-slate-600"
               >
-                #{topic}
+                <Tag size={10} className="mr-1" />
+                {topic}
               </span>
             ))}
           </div>
         )}
 
-        <div className="flex items-center justify-between">
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
           <div className="flex items-center space-x-4">
             <a
               href={project.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors duration-200"
+              className="text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors duration-200 p-1"
             >
               <Github size={18} />
             </a>
@@ -849,16 +664,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 href={project.homepage}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors duration-200"
+                className="text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors duration-200 p-1"
               >
                 <ExternalLink size={18} />
               </a>
             )}
           </div>
 
-          <span className="text-xs text-gray-500 dark:text-gray-500">
-            {new Date(project.updated_at).toLocaleDateString()}
-          </span>
+          <div className="flex items-center text-xs text-slate-500 dark:text-slate-500">
+            <Calendar size={12} className="mr-1" />
+            {formatDate(project.updated_at)}
+          </div>
         </div>
       </div>
     </div>

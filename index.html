@@ -2,26 +2,128 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!-- Favicon y Meta Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#4F46E5" />
+
+    <!-- Viewport y Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO Meta Tags -->
     <meta
       name="description"
-      content="Portafolio profesional de desarrollador web full-stack especializado en React, Node.js y tecnologías modernas."
+      content="Portafolio profesional de AntRed1 - Desarrollador Full-Stack especializado en React, TypeScript, Node.js y tecnologías modernas. Creando experiencias digitales excepcionales."
     />
     <meta
       name="keywords"
-      content="desarrollador, web, React, JavaScript, TypeScript, portafolio"
+      content="AntRed1, desarrollador full-stack, React developer, TypeScript, Node.js, Portafolio, desarrollo web, JavaScript, Python, diseño web, programador"
     />
+    <meta name="author" content="AntRed1" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://antred1.dev" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://antred1.dev/" />
+    <meta property="og:title" content="AntRed1 | Desarrollador Full-Stack" />
+    <meta
+      property="og:description"
+      content="Portafolio profesional de AntRed1 - Desarrollador Full-Stack creando experiencias digitales excepcionales con React, TypeScript y tecnologías modernas."
+    />
+    <meta property="og:image" content="https://antred1.dev/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="AntRed1 Portafolio" />
+    <meta property="og:locale" content="es_ES" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://antred1.dev/" />
+    <meta
+      property="twitter:title"
+      content="AntRed1 | Desarrollador Full-Stack"
+    />
+    <meta
+      property="twitter:description"
+      content="Portafolio profesional de AntRed1 - Desarrollador Full-Stack creando experiencias digitales excepcionales."
+    />
+    <meta property="twitter:image" content="https://antred1.dev/og-image.jpg" />
+    <meta property="twitter:creator" content="@AntRed1" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "AntRed1",
+        "jobTitle": "Full-Stack Developer",
+        "description": "Desarrollador Full-Stack especializado en React, TypeScript, Node.js y tecnologías modernas",
+        "url": "https://antred1.dev",
+        "image": "https://antred1.dev/profile-image.jpg",
+        "sameAs": [
+          "https://github.com/AntRed1",
+          "https://linkedin.com/in/antred1",
+          "https://twitter.com/AntRed1"
+        ],
+        "knowsAbout": [
+          "React",
+          "TypeScript",
+          "JavaScript",
+          "Node.js",
+          "Python",
+          "Web Development",
+          "Full-Stack Development",
+          "UI/UX Design"
+        ],
+        "alumniOf": "Universidad/Institución",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Santo Domingo",
+          "addressCountry": "DO"
+        }
+      }
+    </script>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <title>Mi Portafolio | Desarrollador</title>
+
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//api.github.com" />
+    <link rel="preload" href="/src/main.tsx" as="script" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="AntRed1 Portafolio" />
+    <meta name="application-name" content="AntRed1 Portafolio" />
+
+    <!-- Title -->
+    <title>AntRed1 | Desarrollador Full-Stack | Portafolio Profesional</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Analytics (opcional) -->
+    <!-- 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_TRACKING_ID');
+    </script>
+    -->
   </body>
 </html>
