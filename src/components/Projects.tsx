@@ -7,6 +7,9 @@ import {
   GitFork,
   Loader2,
   AlertTriangle,
+  RefreshCw,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import { useInView } from "../hooks/useInView";
 import { useLanguage } from "../context/LanguageContext";
@@ -33,75 +36,126 @@ interface ProjectWithLanguages extends GitHubRepo {
   image?: string;
 }
 
-// Datos estáticos como fallback
+// Datos estáticos como fallback mejorados
 const fallbackProjects: ProjectWithLanguages[] = [
   {
     id: 1,
     name: "Portfolio Website",
-    description: "Modern portfolio website built with React and TypeScript",
-    html_url: "https://github.com/AntRed1",
-    homepage: null,
+    description:
+      "Modern portfolio website built with React and TypeScript featuring responsive design and dark mode",
+    html_url: "https://github.com/AntRed1/portfolio",
+    homepage: "https://antred1.dev",
     language: "TypeScript",
     languages_url: "",
-    stargazers_count: 0,
-    forks_count: 0,
+    stargazers_count: 12,
+    forks_count: 3,
     created_at: "2024-01-01",
-    updated_at: "2024-08-01",
-    topics: ["portfolio", "react", "typescript", "web"],
+    updated_at: "2024-08-15",
+    topics: ["portfolio", "react", "typescript", "responsive", "dark-mode"],
     fork: false,
-    languages: { TypeScript: 60, CSS: 30, HTML: 10 },
+    languages: { TypeScript: 65, CSS: 25, HTML: 10 },
     category: "frontend",
   },
   {
     id: 2,
     name: "E-commerce Platform",
-    description: "Full-stack e-commerce solution with modern tech stack",
-    html_url: "https://github.com/AntRed1",
-    homepage: null,
+    description:
+      "Full-stack e-commerce solution with React, Node.js, and MongoDB featuring payment integration and admin dashboard",
+    html_url: "https://github.com/AntRed1/ecommerce",
+    homepage: "https://shop.antred1.dev",
     language: "JavaScript",
     languages_url: "",
-    stargazers_count: 5,
-    forks_count: 2,
+    stargazers_count: 28,
+    forks_count: 7,
     created_at: "2024-02-01",
-    updated_at: "2024-07-01",
-    topics: ["ecommerce", "fullstack", "react", "nodejs"],
+    updated_at: "2024-08-10",
+    topics: ["ecommerce", "fullstack", "react", "nodejs", "mongodb", "stripe"],
     fork: false,
-    languages: { JavaScript: 70, HTML: 20, CSS: 10 },
+    languages: { JavaScript: 60, HTML: 20, CSS: 15, Python: 5 },
     category: "fullstack",
   },
   {
     id: 3,
-    name: "Task Management App",
-    description: "Mobile-first task management application",
-    html_url: "https://github.com/AntRed1",
+    name: "Task Management Mobile",
+    description:
+      "Cross-platform mobile task management app built with React Native and Firebase",
+    html_url: "https://github.com/AntRed1/task-app",
     homepage: null,
-    language: "React Native",
+    language: "JavaScript",
     languages_url: "",
-    stargazers_count: 3,
-    forks_count: 1,
+    stargazers_count: 15,
+    forks_count: 4,
     created_at: "2024-03-01",
-    updated_at: "2024-06-01",
-    topics: ["mobile", "react-native", "productivity"],
+    updated_at: "2024-08-05",
+    topics: [
+      "mobile",
+      "react-native",
+      "firebase",
+      "productivity",
+      "cross-platform",
+    ],
     fork: false,
-    languages: { JavaScript: 80, Java: 15, Swift: 5 },
+    languages: { JavaScript: 75, Java: 15, Swift: 10 },
     category: "mobile",
   },
   {
     id: 4,
-    name: "API Gateway",
+    name: "API Gateway Service",
     description:
-      "Microservices API gateway with authentication and rate limiting",
-    html_url: "https://github.com/AntRed1",
+      "Microservices API gateway with authentication, rate limiting, and monitoring built with Python FastAPI",
+    html_url: "https://github.com/AntRed1/api-gateway",
     homepage: null,
     language: "Python",
     languages_url: "",
-    stargazers_count: 8,
-    forks_count: 3,
+    stargazers_count: 35,
+    forks_count: 12,
     created_at: "2024-04-01",
-    updated_at: "2024-05-01",
-    topics: ["api", "backend", "microservices", "python"],
+    updated_at: "2024-08-12",
+    topics: ["api", "backend", "microservices", "python", "fastapi", "docker"],
     fork: false,
-    languages: { Python: 90, Shell: 10 },
+    languages: { Python: 85, Dockerfile: 10, Shell: 5 },
+    category: "backend",
+  },
+  {
+    id: 5,
+    name: "Data Visualization Dashboard",
+    description:
+      "Interactive dashboard for data visualization using D3.js and React with real-time updates",
+    html_url: "https://github.com/AntRed1/data-viz",
+    homepage: "https://viz.antred1.dev",
+    language: "JavaScript",
+    languages_url: "",
+    stargazers_count: 22,
+    forks_count: 6,
+    created_at: "2024-05-01",
+    updated_at: "2024-08-08",
+    topics: ["data-visualization", "d3js", "react", "dashboard", "charts"],
+    fork: false,
+    languages: { JavaScript: 70, CSS: 20, HTML: 10 },
+    category: "frontend",
+  },
+  {
+    id: 6,
+    name: "Machine Learning Pipeline",
+    description:
+      "End-to-end ML pipeline for data processing, model training, and deployment using Python and MLflow",
+    html_url: "https://github.com/AntRed1/ml-pipeline",
+    homepage: null,
+    language: "Python",
+    languages_url: "",
+    stargazers_count: 41,
+    forks_count: 15,
+    created_at: "2024-06-01",
+    updated_at: "2024-08-14",
+    topics: [
+      "machine-learning",
+      "python",
+      "mlflow",
+      "data-science",
+      "tensorflow",
+    ],
+    fork: false,
+    languages: { Python: 90, Jupyter: 8, Shell: 2 },
     category: "backend",
   },
 ];
@@ -116,6 +170,8 @@ const Projects = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [usingFallback, setUsingFallback] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [categories, setCategories] = useState<
     Array<{ id: string; label: string }>
   >([]);
@@ -123,12 +179,30 @@ const Projects = () => {
   const isInView = useInView(ref);
   const { t } = useLanguage();
 
+  const maxRetries = 3;
+  const retryDelays = [1000, 2000, 3000]; // Delays progresivos
+
+  // Detectar estado de conexión
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
   // Mapeo de lenguajes a categorías
   const languageToCategory: Record<string, string> = {
     JavaScript: "frontend",
     TypeScript: "frontend",
     React: "frontend",
     Vue: "frontend",
+    Angular: "frontend",
     HTML: "frontend",
     CSS: "frontend",
     SCSS: "frontend",
@@ -139,6 +213,7 @@ const Projects = () => {
     Ruby: "backend",
     Go: "backend",
     Rust: "backend",
+    "Node.js": "backend",
     Swift: "mobile",
     Kotlin: "mobile",
     Dart: "mobile",
@@ -187,9 +262,16 @@ const Projects = () => {
 
     if (
       topics.some((topic) =>
-        ["backend", "api", "server", "database", "microservices"].includes(
-          topic.toLowerCase()
-        )
+        [
+          "backend",
+          "api",
+          "server",
+          "database",
+          "microservices",
+          "fastapi",
+          "django",
+          "flask",
+        ].includes(topic.toLowerCase())
       )
     ) {
       return "backend";
@@ -197,9 +279,16 @@ const Projects = () => {
 
     if (
       topics.some((topic) =>
-        ["frontend", "ui", "ux", "web", "react", "vue", "angular"].includes(
-          topic.toLowerCase()
-        )
+        [
+          "frontend",
+          "ui",
+          "ux",
+          "web",
+          "react",
+          "vue",
+          "angular",
+          "dashboard",
+        ].includes(topic.toLowerCase())
       )
     ) {
       return "frontend";
@@ -241,27 +330,9 @@ const Projects = () => {
     return "fullstack"; // default
   };
 
-  // Generar imagen placeholder basada en el nombre del proyecto
-  const generateProjectImage = (
-    projectName: string,
-    category: string
-  ): string => {
-    const colors = {
-      frontend: "4F46E5,06B6D4", // indigo to cyan
-      backend: "059669,10B981", // emerald
-      mobile: "7C3AED,A855F7", // violet to purple
-      fullstack: "F59E0B,EF4444", // amber to red
-    };
-
-    const colorPair =
-      colors[category as keyof typeof colors] || colors.fullstack;
-    return `https://via.placeholder.com/400x250/${
-      colorPair.split(",")[0]
-    }/ffffff?text=${encodeURIComponent(projectName)}`;
-  };
-
-  // Función para usar datos de fallback
-  const useFallbackData = () => {
+  // Función para usar datos de fallback con mensaje apropiado
+  const useFallbackData = (reason: string = "connection") => {
+    console.log("Using fallback data due to:", reason);
     setUsingFallback(true);
     setProjects(fallbackProjects);
 
@@ -278,121 +349,201 @@ const Projects = () => {
     ];
 
     setCategories(categoryLabels);
-    setError("Showing sample projects. GitHub data temporarily unavailable.");
-  };
 
-  // Obtener repositorios de GitHub
-  useEffect(() => {
-    const fetchGitHubProjects = async () => {
-      // Límite de reintentos
-      let retryCount = 0;
-      const maxRetries = 2;
-
-      const tryFetch = async (): Promise<void> => {
-        try {
-          setLoading(true);
-          setError("");
-          setUsingFallback(false);
-
-          // Verificar si hemos excedido el límite de reintentos
-          if (retryCount >= maxRetries) {
-            useFallbackData();
-            return;
-          }
-
-          // Obtener repositorios públicos
-          const reposResponse = await fetch(
-            "https://api.github.com/users/AntRed1/repos?type=public&sort=updated&per_page=30"
-          );
-
-          // Manejar diferentes códigos de error
-          if (!reposResponse.ok) {
-            if (reposResponse.status === 403 || reposResponse.status === 429) {
-              console.warn(
-                `GitHub API rate limit exceeded (${reposResponse.status})`
-              );
-              useFallbackData();
-              return;
-            }
-            throw new Error(
-              `HTTP ${reposResponse.status}: ${reposResponse.statusText}`
-            );
-          }
-
-          const repos = await reposResponse.json();
-
-          // Verificar si la respuesta es un array válido
-          if (!Array.isArray(repos)) {
-            console.warn("Invalid response format from GitHub API");
-            useFallbackData();
-            return;
-          }
-
-          // Filtrar repositorios
-          let ownRepos = repos.filter((repo) => !repo.fork && repo.description);
-
-          // Si no hay repositorios con descripción, tomar algunos sin descripción
-          if (ownRepos.length === 0) {
-            ownRepos = repos.filter((repo) => !repo.fork).slice(0, 8);
-          }
-
-          // Procesar repositorios con datos básicos
-          const projectsWithLanguages: ProjectWithLanguages[] = ownRepos.map(
-            (repo) => {
-              const languages = repo.language
-                ? { [repo.language]: 100 }
-                : { JavaScript: 60, HTML: 25, CSS: 15 };
-              const category = determineCategory(languages, repo.topics || []);
-
-              return {
-                ...repo,
-                languages,
-                category,
-                image: generateProjectImage(repo.name, category),
-              };
-            }
-          );
-
-          setProjects(projectsWithLanguages);
-
-          // Generar categorías dinámicamente
-          const uniqueCategories = [
-            ...new Set(projectsWithLanguages.map((p) => p.category)),
-          ];
-          const categoryLabels = [
-            { id: "all", label: t("projects.all") || "All" },
-            ...uniqueCategories.map((cat) => ({
-              id: cat,
-              label:
-                t(`projects.${cat}`) ||
-                cat.charAt(0).toUpperCase() + cat.slice(1),
-            })),
-          ];
-
-          setCategories(categoryLabels);
-        } catch (error) {
-          console.error(
-            `Error fetching GitHub projects (attempt ${retryCount + 1}):`,
-            error
-          );
-          retryCount++;
-
-          if (retryCount < maxRetries) {
-            // Esperar antes del siguiente intento
-            setTimeout(() => tryFetch(), 2000 * retryCount);
-          } else {
-            useFallbackData();
-          }
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      tryFetch();
+    // Mensajes de error más específicos
+    const errorMessages = {
+      connection:
+        "GitHub API is temporarily unavailable. Showing sample projects.",
+      timeout: "Request timed out. Showing sample projects while we retry.",
+      rateLimit: "GitHub API rate limit exceeded. Showing sample projects.",
+      offline: "You're offline. Showing cached sample projects.",
+      error: "Unable to load GitHub data. Showing sample projects.",
     };
 
-    fetchGitHubProjects();
-  }, [t]);
+    setError(
+      errorMessages[reason as keyof typeof errorMessages] || errorMessages.error
+    );
+  };
+
+  // Función mejorada para reintentos con backoff exponencial
+  const fetchWithRetry = async (
+    url: string,
+    options: RequestInit = {}
+  ): Promise<Response> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+          "User-Agent": "Portfolio-Website",
+          ...options.headers,
+        },
+      });
+
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error("Request timeout");
+      }
+      throw error;
+    }
+  };
+
+  // Función principal para obtener proyectos de GitHub
+  const fetchGitHubProjects = async (attempt: number = 0): Promise<void> => {
+    try {
+      setLoading(true);
+      setError("");
+      setRetryCount(attempt);
+
+      // Verificar conexión
+      if (!isOnline) {
+        useFallbackData("offline");
+        return;
+      }
+
+      console.log(
+        `Fetching GitHub projects (attempt ${attempt + 1}/${maxRetries + 1})`
+      );
+
+      // Obtener repositorios públicos con retry
+      const reposResponse = await fetchWithRetry(
+        "https://api.github.com/users/AntRed1/repos?type=public&sort=updated&per_page=30"
+      );
+
+      // Manejar diferentes códigos de error
+      if (!reposResponse.ok) {
+        if (reposResponse.status === 403) {
+          const resetHeader = reposResponse.headers.get("x-ratelimit-reset");
+          console.warn(
+            `GitHub API rate limit exceeded. Reset at: ${resetHeader}`
+          );
+          useFallbackData("rateLimit");
+          return;
+        }
+        if (reposResponse.status === 429) {
+          console.warn("Too many requests to GitHub API");
+          useFallbackData("rateLimit");
+          return;
+        }
+        throw new Error(
+          `HTTP ${reposResponse.status}: ${reposResponse.statusText}`
+        );
+      }
+
+      const repos = await reposResponse.json();
+
+      // Verificar si la respuesta es válida
+      if (!Array.isArray(repos)) {
+        throw new Error("Invalid response format from GitHub API");
+      }
+
+      if (repos.length === 0) {
+        console.warn("No repositories found");
+        useFallbackData("error");
+        return;
+      }
+
+      // Filtrar y procesar repositorios
+      let ownRepos = repos.filter((repo) => !repo.fork && repo.description);
+
+      // Si no hay repositorios con descripción, tomar algunos sin descripción
+      if (ownRepos.length === 0) {
+        ownRepos = repos.filter((repo) => !repo.fork).slice(0, 8);
+      }
+
+      // Procesar repositorios con datos básicos
+      const projectsWithLanguages: ProjectWithLanguages[] = ownRepos.map(
+        (repo) => {
+          const languages = repo.language
+            ? { [repo.language]: 100 }
+            : { JavaScript: 60, HTML: 25, CSS: 15 };
+          const category = determineCategory(languages, repo.topics || []);
+
+          return {
+            ...repo,
+            languages,
+            category,
+          };
+        }
+      );
+
+      // Éxito: actualizar estado
+      setProjects(projectsWithLanguages);
+      setUsingFallback(false);
+      setRetryCount(0);
+
+      // Generar categorías dinámicamente
+      const uniqueCategories = [
+        ...new Set(projectsWithLanguages.map((p) => p.category)),
+      ];
+      const categoryLabels = [
+        { id: "all", label: t("projects.all") || "All" },
+        ...uniqueCategories.map((cat) => ({
+          id: cat,
+          label:
+            t(`projects.${cat}`) || cat.charAt(0).toUpperCase() + cat.slice(1),
+        })),
+      ];
+
+      setCategories(categoryLabels);
+
+      console.log(
+        `Successfully loaded ${projectsWithLanguages.length} projects from GitHub`
+      );
+    } catch (error) {
+      console.error(
+        `Error fetching GitHub projects (attempt ${attempt + 1}):`,
+        error
+      );
+
+      // Si aún podemos reintentar
+      if (attempt < maxRetries) {
+        const delay = retryDelays[attempt] || 3000;
+        console.log(`Retrying in ${delay}ms...`);
+
+        setError(
+          `Connection failed. Retrying in ${delay / 1000}s... (${
+            attempt + 1
+          }/${maxRetries})`
+        );
+
+        setTimeout(() => {
+          fetchGitHubProjects(attempt + 1);
+        }, delay);
+      } else {
+        // Máximo de reintentos alcanzado
+        console.error("Max retries exceeded, using fallback data");
+        const errorType =
+          error instanceof Error && error.message.includes("timeout")
+            ? "timeout"
+            : "connection";
+        useFallbackData(errorType);
+      }
+    } finally {
+      if (attempt >= maxRetries || !isOnline) {
+        setLoading(false);
+      }
+    }
+  };
+
+  // Función manual para reintento
+  const handleManualRetry = () => {
+    setRetryCount(0);
+    setError("");
+    fetchGitHubProjects(0);
+  };
+
+  // Efecto principal para cargar proyectos
+  useEffect(() => {
+    fetchGitHubProjects(0);
+  }, [t, isOnline]);
 
   // Filtrar proyectos
   useEffect(() => {
@@ -425,6 +576,7 @@ const Projects = () => {
     setFilteredProjects(filtered);
   }, [projects, selectedCategory, searchTerm]);
 
+  // Componente de estado de carga mejorado
   if (loading) {
     return (
       <section
@@ -435,9 +587,20 @@ const Projects = () => {
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <Loader2 className="animate-spin h-12 w-12 text-primary-500 mx-auto mb-4" />
-              <p className="text-lg text-gray-600 dark:text-gray-400">
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
                 Loading projects from GitHub...
               </p>
+              {retryCount > 0 && (
+                <p className="text-sm text-gray-500 dark:text-gray-500">
+                  Attempt {retryCount + 1} of {maxRetries + 1}
+                </p>
+              )}
+              {!isOnline && (
+                <div className="flex items-center justify-center mt-2 text-orange-600 dark:text-orange-400">
+                  <WifiOff size={16} className="mr-2" />
+                  <span className="text-sm">You appear to be offline</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -465,12 +628,41 @@ const Projects = () => {
               {t("projects.subtitle") ||
                 "Explore my latest work and contributions on GitHub"}
             </p>
-            {error && (
-              <div className="mt-4 p-3 bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 rounded-lg max-w-lg mx-auto flex items-center">
-                <AlertTriangle size={16} className="mr-2 flex-shrink-0" />
-                <p className="text-sm">{error}</p>
-              </div>
-            )}
+
+            {/* Estado de conexión y errores */}
+            <div className="mt-4 space-y-2">
+              {!isOnline && (
+                <div className="inline-flex items-center p-3 bg-orange-100 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 text-orange-800 dark:text-orange-200 rounded-lg">
+                  <WifiOff size={16} className="mr-2 flex-shrink-0" />
+                  <span className="text-sm">You're currently offline</span>
+                </div>
+              )}
+
+              {error && (
+                <div className="inline-flex items-center p-3 bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 rounded-lg max-w-lg mx-auto">
+                  <AlertTriangle size={16} className="mr-2 flex-shrink-0" />
+                  <span className="text-sm flex-1">{error}</span>
+                  {(error.includes("GitHub API") ||
+                    error.includes("Connection failed")) &&
+                    isOnline && (
+                      <button
+                        onClick={handleManualRetry}
+                        className="ml-3 p-1 hover:bg-yellow-200 dark:hover:bg-yellow-800/30 rounded transition-colors"
+                        title="Retry connection"
+                      >
+                        <RefreshCw size={14} />
+                      </button>
+                    )}
+                </div>
+              )}
+
+              {isOnline && !error && !usingFallback && (
+                <div className="inline-flex items-center text-green-600 dark:text-green-400 text-sm">
+                  <Wifi size={16} className="mr-2" />
+                  <span>Connected to GitHub</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -554,8 +746,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <div className="glass-card rounded-xl overflow-hidden glass-hover group relative">
       {usingFallback && (
-        <div className="absolute top-2 right-2 z-10">
-          <span className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-xs px-2 py-1 rounded-full">
+        <div className="absolute top-3 right-3 z-10">
+          <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full font-medium">
             Sample
           </span>
         </div>
