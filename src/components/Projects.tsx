@@ -12,16 +12,25 @@ import {
   WifiOff,
   Calendar,
   Tag,
+  ChevronDown,
+  Archive,
 } from "lucide-react";
 
 // Configuración para GitHub Pages
 const GITHUB_CONFIG = {
-  username: "AntRed1", // Cambia por tu username real
-  repoName: "Portafolio", // Cambia por tu repo name real
-  baseUrl: "/Portafolio", // Debe coincidir con tu vite.config.js
+  username: "AntRed1",
+  repoName: "Portafolio",
+  baseUrl: "/Portafolio",
 };
 
-// Mock hooks para el ejemplo (reemplaza con tus hooks reales)
+// Configuración de paginación
+const PAGINATION_CONFIG = {
+  initialLoad: 6, // Proyectos a mostrar inicialmente
+  loadMoreCount: 6, // Proyectos a cargar cada vez
+  maxRepos: 100, // Máximo de repos a obtener de GitHub API
+};
+
+// Mock hooks
 const useInView = (ref) => {
   const [isInView, setIsInView] = useState(false);
 
@@ -50,12 +59,15 @@ const useLanguage = () => ({
       "projects.fullstack": "Full Stack",
       "projects.mobile": "Móvil",
       "projects.searchPlaceholder": "Buscar proyectos...",
+      "projects.loadMore": "Cargar más proyectos",
+      "projects.showingProjects": "Mostrando {current} de {total} proyectos",
+      "projects.noMoreProjects": "No hay más proyectos para mostrar",
     };
     return translations[key] || key;
   },
 });
 
-// Datos estáticos mejorados con rutas correctas para GitHub Pages
+// Datos estáticos ampliados
 const fallbackProjects = [
   {
     id: 1,
@@ -173,11 +185,116 @@ const fallbackProjects = [
     languages: { Python: 90, Jupyter: 8, Shell: 2 },
     category: "backend",
   },
+  // Proyectos adicionales para demostrar la paginación
+  {
+    id: 7,
+    name: "Weather App",
+    description:
+      "Aplicación del clima con geolocalización, pronósticos de 5 días y mapas interactivos",
+    html_url: `https://github.com/${GITHUB_CONFIG.username}/weather-app`,
+    homepage: null,
+    language: "JavaScript",
+    stargazers_count: 18,
+    forks_count: 6,
+    created_at: "2024-07-01",
+    updated_at: "2024-08-01",
+    topics: ["weather", "api", "geolocation", "pwa", "responsive"],
+    fork: false,
+    languages: { JavaScript: 80, CSS: 15, HTML: 5 },
+    category: "frontend",
+  },
+  {
+    id: 8,
+    name: "Chat Application",
+    description:
+      "Aplicación de chat en tiempo real con Socket.io, autenticación JWT y salas privadas",
+    html_url: `https://github.com/${GITHUB_CONFIG.username}/chat-app`,
+    homepage: null,
+    language: "JavaScript",
+    stargazers_count: 25,
+    forks_count: 11,
+    created_at: "2024-05-15",
+    updated_at: "2024-07-20",
+    topics: ["chat", "socket.io", "realtime", "jwt", "nodejs"],
+    fork: false,
+    languages: { JavaScript: 70, CSS: 20, HTML: 10 },
+    category: "fullstack",
+  },
+  {
+    id: 9,
+    name: "Blog CMS",
+    description:
+      "Sistema de gestión de contenido para blogs con editor Markdown y panel administrativo",
+    html_url: `https://github.com/${GITHUB_CONFIG.username}/blog-cms`,
+    homepage: null,
+    language: "TypeScript",
+    stargazers_count: 33,
+    forks_count: 14,
+    created_at: "2024-04-15",
+    updated_at: "2024-07-10",
+    topics: ["cms", "blog", "markdown", "typescript", "admin-panel"],
+    fork: false,
+    languages: { TypeScript: 75, CSS: 15, HTML: 10 },
+    category: "fullstack",
+  },
+  {
+    id: 10,
+    name: "Expense Tracker",
+    description:
+      "Rastreador de gastos personales con categorización automática y reportes visuales",
+    html_url: `https://github.com/${GITHUB_CONFIG.username}/expense-tracker`,
+    homepage: null,
+    language: "React",
+    stargazers_count: 19,
+    forks_count: 7,
+    created_at: "2024-03-20",
+    updated_at: "2024-06-30",
+    topics: ["finance", "tracker", "charts", "budgeting", "personal"],
+    fork: false,
+    languages: { JavaScript: 70, CSS: 25, HTML: 5 },
+    category: "frontend",
+  },
+  {
+    id: 11,
+    name: "Docker Microservices",
+    description:
+      "Arquitectura de microservicios con Docker, Kubernetes y service mesh",
+    html_url: `https://github.com/${GITHUB_CONFIG.username}/docker-microservices`,
+    homepage: null,
+    language: "Python",
+    stargazers_count: 45,
+    forks_count: 22,
+    created_at: "2024-02-10",
+    updated_at: "2024-06-15",
+    topics: ["docker", "kubernetes", "microservices", "devops", "python"],
+    fork: false,
+    languages: { Python: 60, Dockerfile: 30, YAML: 10 },
+    category: "backend",
+  },
+  {
+    id: 12,
+    name: "Game Engine 2D",
+    description:
+      "Motor de juegos 2D simple construido con JavaScript y Canvas API",
+    html_url: `https://github.com/${GITHUB_CONFIG.username}/game-engine-2d`,
+    homepage: null,
+    language: "JavaScript",
+    stargazers_count: 38,
+    forks_count: 16,
+    created_at: "2024-01-05",
+    updated_at: "2024-05-25",
+    topics: ["game-engine", "canvas", "2d-graphics", "javascript", "animation"],
+    fork: false,
+    languages: { JavaScript: 90, CSS: 5, HTML: 5 },
+    category: "frontend",
+  },
 ];
 
 const Projects = () => {
-  const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]);
+  // Estados existentes
+  const [allProjects, setAllProjects] = useState([]); // Todos los proyectos disponibles
+  const [projects, setProjects] = useState([]); // Proyectos filtrados
+  const [filteredProjects, setFilteredProjects] = useState([]); // Proyectos después de búsqueda
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -186,11 +303,15 @@ const Projects = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [categories, setCategories] = useState([]);
 
+  // Estados para paginación
+  const [displayedProjects, setDisplayedProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const ref = useRef(null);
   const isInView = useInView(ref);
   const { t } = useLanguage();
 
-  // Mapeo de lenguajes a categorías
   const languageToCategory = {
     JavaScript: "frontend",
     TypeScript: "frontend",
@@ -226,7 +347,6 @@ const Projects = () => {
     };
   }, []);
 
-  // Función para determinar categoría
   const determineCategory = (languages, topics) => {
     const topicKeywords = {
       mobile: ["mobile", "android", "ios", "flutter", "react-native"],
@@ -265,10 +385,9 @@ const Projects = () => {
     return "fullstack";
   };
 
-  // Función para usar datos de fallback
   const useFallbackData = () => {
     console.log("Using fallback data");
-    setProjects(fallbackProjects);
+    setAllProjects(fallbackProjects);
     setUsingFallback(true);
 
     const uniqueCategories = [
@@ -286,7 +405,6 @@ const Projects = () => {
     setCategories(categoryLabels);
   };
 
-  // Función para obtener proyectos de GitHub
   const fetchGitHubProjects = async () => {
     if (!isOnline) return;
 
@@ -296,10 +414,10 @@ const Projects = () => {
       console.log("Fetching GitHub projects...");
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(
-        `https://api.github.com/users/${GITHUB_CONFIG.username}/repos?type=public&sort=updated&per_page=50`,
+        `https://api.github.com/users/${GITHUB_CONFIG.username}/repos?type=public&sort=updated&per_page=${PAGINATION_CONFIG.maxRepos}`,
         {
           signal: controller.signal,
           headers: {
@@ -321,21 +439,18 @@ const Projects = () => {
         throw new Error("Invalid response from GitHub API");
       }
 
-      let filteredRepos = repos.filter(
-        (repo) => !repo.fork && repo.description
+      // Filtrar y procesar repositorios
+      let filteredRepos = repos.filter((repo) => !repo.fork);
+
+      // Priorizar repos con descripción, pero incluir todos
+      const reposWithDescription = filteredRepos.filter(
+        (repo) => repo.description
+      );
+      const reposWithoutDescription = filteredRepos.filter(
+        (repo) => !repo.description
       );
 
-      if (filteredRepos.length < 5) {
-        const reposWithoutDescription = repos.filter(
-          (repo) => !repo.fork && !repo.description
-        );
-        filteredRepos = [
-          ...filteredRepos,
-          ...reposWithoutDescription.slice(0, 5),
-        ];
-      }
-
-      filteredRepos = filteredRepos.slice(0, 12);
+      filteredRepos = [...reposWithDescription, ...reposWithoutDescription];
 
       const projectsWithLanguages = filteredRepos.map((repo) => {
         const languages = repo.language
@@ -353,7 +468,7 @@ const Projects = () => {
         };
       });
 
-      setProjects(projectsWithLanguages);
+      setAllProjects(projectsWithLanguages);
       setUsingFallback(false);
 
       const uniqueCategories = [
@@ -372,7 +487,6 @@ const Projects = () => {
       console.log(
         `Successfully loaded ${projectsWithLanguages.length} projects from GitHub`
       );
-
       setError("");
     } catch (error) {
       console.error("Error fetching GitHub projects:", error);
@@ -384,7 +498,6 @@ const Projects = () => {
     }
   };
 
-  // Función para reintento manual
   const handleManualRetry = () => {
     fetchGitHubProjects();
   };
@@ -400,22 +513,29 @@ const Projects = () => {
     }
   }, []);
 
-  // Efecto para cuando cambia la conexión
   useEffect(() => {
     if (isOnline && usingFallback) {
       fetchGitHubProjects();
     }
   }, [isOnline]);
 
-  // Filtrar proyectos
+  // Filtrar por categoría
   useEffect(() => {
-    let filtered = projects;
+    let filtered = allProjects;
 
     if (selectedCategory !== "all") {
       filtered = filtered.filter(
         (project) => project.category === selectedCategory
       );
     }
+
+    setProjects(filtered);
+    setCurrentPage(1); // Reset pagination when category changes
+  }, [allProjects, selectedCategory]);
+
+  // Filtrar por búsqueda
+  useEffect(() => {
+    let filtered = projects;
 
     if (searchTerm) {
       filtered = filtered.filter(
@@ -434,7 +554,30 @@ const Projects = () => {
     }
 
     setFilteredProjects(filtered);
-  }, [projects, selectedCategory, searchTerm]);
+    setCurrentPage(1); // Reset pagination when search changes
+  }, [projects, searchTerm]);
+
+  // Actualizar proyectos mostrados basado en paginación
+  useEffect(() => {
+    const itemsToShow = currentPage * PAGINATION_CONFIG.initialLoad;
+    setDisplayedProjects(filteredProjects.slice(0, itemsToShow));
+  }, [filteredProjects, currentPage]);
+
+  // Función para cargar más proyectos
+  const handleLoadMore = () => {
+    setLoadingMore(true);
+
+    // Simular delay para mejor UX
+    setTimeout(() => {
+      setCurrentPage((prev) => prev + 1);
+      setLoadingMore(false);
+    }, 800);
+  };
+
+  // Calcular si hay más proyectos para cargar
+  const hasMoreProjects = displayedProjects.length < filteredProjects.length;
+  const totalProjects = filteredProjects.length;
+  const currentDisplayed = displayedProjects.length;
 
   return (
     <section
@@ -536,10 +679,27 @@ const Projects = () => {
             ))}
           </div>
 
+          {/* Project Counter */}
+          {totalProjects > 0 && (
+            <div className="text-center mb-8">
+              <p className="text-slate-600 dark:text-slate-400">
+                Mostrando{" "}
+                <span className="font-semibold text-blue-600 dark:text-blue-400">
+                  {currentDisplayed}
+                </span>{" "}
+                de{" "}
+                <span className="font-semibold text-blue-600 dark:text-blue-400">
+                  {totalProjects}
+                </span>{" "}
+                proyectos
+              </p>
+            </div>
+          )}
+
           {/* Projects Grid */}
-          {filteredProjects.length > 0 && (
+          {displayedProjects.length > 0 && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProjects.map((project, index) => (
+              {displayedProjects.map((project, index) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
@@ -550,8 +710,52 @@ const Projects = () => {
             </div>
           )}
 
+          {/* Load More Button */}
+          {hasMoreProjects && (
+            <div className="text-center mt-12">
+              <button
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+                className="group relative inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {loadingMore ? (
+                  <>
+                    <Loader2 size={20} className="mr-3 animate-spin" />
+                    Cargando...
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown
+                      size={20}
+                      className="mr-3 group-hover:translate-y-1 transition-transform duration-300"
+                    />
+                    {t("projects.loadMore")}
+                    <span className="ml-3 px-2 py-1 bg-white/20 rounded-full text-xs">
+                      +
+                      {Math.min(
+                        PAGINATION_CONFIG.loadMoreCount,
+                        totalProjects - currentDisplayed
+                      )}
+                    </span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* End of projects message */}
+          {!hasMoreProjects &&
+            displayedProjects.length > PAGINATION_CONFIG.initialLoad && (
+              <div className="text-center mt-12">
+                <div className="inline-flex items-center px-6 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full">
+                  <Archive size={18} className="mr-2" />
+                  {t("projects.noMoreProjects")}
+                </div>
+              </div>
+            )}
+
           {/* No results */}
-          {filteredProjects.length === 0 && projects.length > 0 && (
+          {filteredProjects.length === 0 && allProjects.length > 0 && (
             <div className="text-center py-16">
               <div className="bg-white/70 backdrop-blur-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800/70 rounded-3xl p-12 max-w-md mx-auto shadow-xl">
                 <Search className="h-16 w-16 text-slate-400 mx-auto mb-6" />
@@ -566,7 +770,7 @@ const Projects = () => {
           )}
 
           {/* Loading state solo si no hay proyectos */}
-          {projects.length === 0 && loading && (
+          {allProjects.length === 0 && loading && (
             <div className="flex items-center justify-center py-20">
               <div className="text-center">
                 <Loader2 className="animate-spin h-12 w-12 text-blue-500 mx-auto mb-4" />
@@ -597,21 +801,6 @@ const ProjectCard = ({ project, usingFallback, index }) => {
       year: "numeric",
     });
   };
-
-  // SOLUCIÓN 1: Definir los keyframes en el CSS de Tailwind (recomendado)
-  // En tu archivo CSS global o en tu configuración de Tailwind, agrega:
-  /*
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  */
 
   return (
     <div
