@@ -17,6 +17,12 @@ import {
 } from "lucide-react";
 import { useInView } from "../hooks/useInView";
 import { useLanguage } from "../context/LanguageContext";
+import {
+  downloadDocument,
+  openDocumentInNewTab,
+  getDocumentPath,
+  debugPaths,
+} from "../utils/paths";
 
 interface Certification {
   id: string;
@@ -38,6 +44,7 @@ const About = () => {
   const [selectedCertification, setSelectedCertification] =
     useState<Certification | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Configuración de certificaciones con archivos reales
   const certifications: Certification[] = [
@@ -146,27 +153,42 @@ const About = () => {
     setSelectedCertification(null);
   };
 
-  const handleDownloadCertification = (
+  const handleDownloadCertification = async (
     certification: Certification,
     event?: React.MouseEvent
   ) => {
     if (event) {
       event.stopPropagation();
     }
-    // Descargar PDF
-    const pdfUrl = `/docs/${certification.fileName}`;
-    const link = document.createElement("a");
-    link.href = pdfUrl;
-    link.download = certification.fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    try {
+      setIsDownloading(true);
+      await downloadDocument(certification.fileName);
+    } catch (error) {
+      console.error("Error downloading certification:", error);
+      alert(
+        `Error al descargar la certificación: ${certification.name}. Por favor, intenta nuevamente.`
+      );
+
+      // Debug en caso de error
+      if (import.meta.env.DEV) {
+        debugPaths(certification.fileName);
+      }
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
-  const handleOpenInNewTab = () => {
+  const handleOpenInNewTab = async () => {
     if (selectedCertification) {
-      const pdfUrl = `/docs/${selectedCertification.fileName}`;
-      window.open(pdfUrl, "_blank");
+      try {
+        await openDocumentInNewTab(selectedCertification.fileName);
+      } catch (error) {
+        console.error("Error opening certification:", error);
+        alert(
+          `Error al abrir la certificación: ${selectedCertification.name}. Por favor, intenta nuevamente.`
+        );
+      }
     }
   };
 
@@ -266,7 +288,8 @@ const About = () => {
                           onClick={(e) =>
                             handleDownloadCertification(certification, e)
                           }
-                          className="p-1 rounded hover:bg-gray-200/50 dark:hover:bg-gray-600/50 transition-colors"
+                          disabled={isDownloading}
+                          className="p-1 rounded hover:bg-gray-200/50 dark:hover:bg-gray-600/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <Download
                             className="text-gray-500 dark:text-gray-400"
@@ -412,7 +435,9 @@ const About = () => {
               {/* PDF Viewer Container */}
               <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 mb-6 min-h-[500px] flex items-center justify-center border border-gray-200/50 dark:border-gray-700/50">
                 <iframe
-                  src={`/docs/${selectedCertification.fileName}#toolbar=0&navpanes=0&scrollbar=0`}
+                  src={`${getDocumentPath(
+                    selectedCertification.fileName
+                  )}#toolbar=0&navpanes=0&scrollbar=0`}
                   className="w-full h-[500px] rounded-lg border-0"
                   title={selectedCertification.name}
                 />
@@ -448,10 +473,11 @@ const About = () => {
                 onClick={() =>
                   handleDownloadCertification(selectedCertification)
                 }
-                className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-xl hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors duration-200 font-medium"
+                disabled={isDownloading}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-xl hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Download size={16} />
-                Descargar
+                {isDownloading ? "Descargando..." : "Descargar"}
               </button>
               <button
                 onClick={handleOpenInNewTab}

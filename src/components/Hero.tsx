@@ -11,6 +11,12 @@ import {
   Info,
 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
+import {
+  downloadDocument,
+  openDocumentInNewTab,
+  getDocumentPath,
+  debugPaths,
+} from "../utils/paths";
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -18,6 +24,7 @@ const Hero = () => {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const githubUsername = "AntRed1";
   const cvFileName = "CV_ANTROJAS.pdf";
@@ -77,22 +84,34 @@ const Hero = () => {
     setIsModalOpen(false);
   };
 
-  const handleDownloadCV = (event?: React.MouseEvent) => {
+  const handleDownloadCV = async (event?: React.MouseEvent) => {
     if (event) {
       event.stopPropagation();
     }
-    const cvUrl = `/docs/${cvFileName}`;
-    const link = document.createElement("a");
-    link.href = cvUrl;
-    link.download = cvFileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    try {
+      setIsDownloading(true);
+      await downloadDocument(cvFileName);
+    } catch (error) {
+      console.error("Error downloading CV:", error);
+      alert("Error al descargar el CV. Por favor, intenta nuevamente.");
+
+      // Debug en caso de error
+      if (import.meta.env.DEV) {
+        debugPaths(cvFileName);
+      }
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
-  const handleOpenCVInNewTab = () => {
-    const cvUrl = `/docs/${cvFileName}`;
-    window.open(cvUrl, "_blank");
+  const handleOpenCVInNewTab = async () => {
+    try {
+      await openDocumentInNewTab(cvFileName);
+    } catch (error) {
+      console.error("Error opening CV:", error);
+      alert("Error al abrir el CV. Por favor, intenta nuevamente.");
+    }
   };
 
   return (
@@ -188,10 +207,11 @@ const Hero = () => {
               <div className="relative group">
                 <button
                   onClick={handleViewCV}
-                  className="btn-secondary inline-flex items-center gap-2 hover:scale-105 transition-transform duration-200 relative overflow-hidden"
+                  disabled={isDownloading}
+                  className="btn-secondary inline-flex items-center gap-2 hover:scale-105 transition-transform duration-200 relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Eye size={20} />
-                  {t("hero.downloadCV")}
+                  {isDownloading ? "Descargando..." : t("hero.downloadCV")}
 
                   {/* Hover tooltip */}
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-3 py-2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
@@ -203,7 +223,8 @@ const Hero = () => {
                 {/* Download shortcut */}
                 <button
                   onClick={handleDownloadCV}
-                  className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 hover:bg-blue-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 shadow-lg"
+                  disabled={isDownloading}
+                  className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 hover:bg-blue-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 shadow-lg disabled:opacity-25"
                   title="Descarga directa"
                 >
                   <Download size={12} className="mx-auto" />
@@ -269,7 +290,9 @@ const Hero = () => {
               {/* PDF Viewer Container */}
               <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 mb-6 min-h-[600px] flex items-center justify-center border border-gray-200/50 dark:border-gray-700/50">
                 <iframe
-                  src={`/docs/${cvFileName}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                  src={`${getDocumentPath(
+                    cvFileName
+                  )}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
                   className="w-full h-[600px] rounded-lg border-0"
                   title="Curriculum Vitae - Antonio Rojas"
                 />
@@ -321,10 +344,11 @@ const Hero = () => {
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleDownloadCV}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-xl hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors duration-200 font-medium"
+                  disabled={isDownloading}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-xl hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Download size={16} />
-                  Descargar
+                  {isDownloading ? "Descargando..." : "Descargar"}
                 </button>
                 <button
                   onClick={handleOpenCVInNewTab}
