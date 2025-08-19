@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Github,
   Linkedin,
@@ -21,6 +21,33 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const closeModal = () => setActiveModal(null);
+
+  // Añadir estilos CSS al head cuando el componente se monta
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(148, 163, 184, 0.1);
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(99, 102, 241, 0.5);
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(99, 102, 241, 0.7);
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Cleanup: remover estilos cuando el componente se desmonta
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   const socialLinks = [
     {
@@ -467,24 +494,6 @@ const Footer = () => {
       {/* Modals */}
       {activeModal === "privacy" && <PrivacyModal />}
       {activeModal === "terms" && <TermsModal />}
-
-      {/* Custom Scrollbar Styles */}
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(148, 163, 184, 0.1);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(99, 102, 241, 0.5);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(99, 102, 241, 0.7);
-        }
-      `}</style>
     </>
   );
 };
